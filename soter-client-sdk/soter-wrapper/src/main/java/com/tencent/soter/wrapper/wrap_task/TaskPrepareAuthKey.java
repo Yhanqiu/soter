@@ -108,6 +108,21 @@ public class TaskPrepareAuthKey extends BaseSoterPrepareKeyTask implements Soter
         SoterCore.removeAuthKey(mAuthKeyName, false);
     }
 
+    void printLongLog(String msg) {
+        SLogger.d(TAG, "soter111: prepare ask end");
+            if (msg.length() > 4000) {
+                for (int i = 0; i < msg.length(); i += 4000) {
+                    if (i + 4000 < msg.length()) {
+                        SLogger.d(TAG, msg.substring(i, i + 4000));
+                    } else {
+                        SLogger.d(TAG, msg.substring(i, msg.length()));
+                    }
+                }
+            } else {
+                SLogger.d(TAG, msg);
+            }
+    }
+
     @Override
     void execute() {
         if(!SoterCore.isAppGlobalSecureKeyValid() && mIsAutoPrepareASKWhenNotFound) {
@@ -117,6 +132,7 @@ public class TaskPrepareAuthKey extends BaseSoterPrepareKeyTask implements Soter
                 @Override
                 public void onResult(@NonNull SoterProcessKeyPreparationResult result) {
                     SLogger.d(TAG, "soter: prepare ask end: %s", result.toString());
+                    printLongLog(result.toString());
                     if(result.errCode == SoterCore.ERR_OK) {
                         generateAuthKey();
                     } else {
